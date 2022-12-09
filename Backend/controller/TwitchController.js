@@ -8,6 +8,7 @@ class TwitchController{
         this.postTwitchEventSub();
     }
 
+    //Sub types: https://dev.twitch.tv/docs/eventsub/eventsub-subscription-types
     postTwitchEventSub(){
         app.post('/eventsub', (req, res) => {
             let secret = this.twitchService.getSecret();
@@ -23,7 +24,7 @@ class TwitchController{
 
                     console.log(`[EVENT]: Event type: ${notification.subscription.type}`);
                     console.log(JSON.stringify(notification.event, null, 4));
-
+                    new TwitchService().decideEventType(notification)
                     res.sendStatus(204);
                 }
                 else if (constans.MESSAGE_TYPE_VERIFICATION === req.headers[constans.MESSAGE_TYPE]) {
@@ -32,6 +33,7 @@ class TwitchController{
                 else if (constans.MESSAGE_TYPE_REVOCATION === req.headers[constans.MESSAGE_TYPE]) {
                     res.sendStatus(204);
 
+                    new TwitchService().deleteEventListenerAfterRevoked(notification.subscription.id)
                     console.log(`[EVENT]: ${notification.subscription.type} notifications revoked!`);
                     console.log(`[EVENT]: reason: ${notification.subscription.status}`);
                     console.log(`[EVENT]: condition: ${JSON.stringify(notification.subscription.condition, null, 4)}`);
@@ -42,7 +44,7 @@ class TwitchController{
                 }
             }
             else {
-                console.log('403');    // Signatures didn't match.
+                console.log('[EVENT]: Signitures didnt match error code: 403');
                 res.sendStatus(403);
             }
         })

@@ -2,6 +2,7 @@ const {default: axios} = require("axios");
 const DAO = require("../dao/dao");
 const User = require("../model/user");
 const Twitch = require("../events/twitch");
+const TwitchService = require("./TwitchService");
 
 class UserManagementService{
 
@@ -39,17 +40,18 @@ class UserManagementService{
         new DAO().createUser(user)
             .then(()=>{
                     console.log("[MANAGEUSER]: User successfully created: #"+user.username);
+                    new TwitchService().subscribeToRequiredEvents(user);
                     /*res.status(200).redirect_uri("")*/
                     //TODO: WEBOLDALRA VISSZAIRÁNYÍRÁS BEJELENTKEZVE, ÉS CSATLAKOZÁS A CHATRE REGISZTRÁCIÓKOR
                     twitch.joinChannel("#"+user.username)
                 }
             ).catch((error)=>{
-            if(error.toString().indexOf("Duplicate entry")===-1){
-                console.log("[MANAGEUSER]: User Creation Error: #"+error);
-                //res.status(500).redirect_uri("");
-                //TODO: WEBOLDALRA VISSZAIRÁNYÍRÁS HIBA
-                return
-            }
+                if(error.toString().indexOf("Duplicate entry")===-1){
+                    console.log("[MANAGEUSER]: User Creation Error: #"+error);
+                    //res.status(500).redirect_uri("");
+                    //TODO: WEBOLDALRA VISSZAIRÁNYÍRÁS HIBA
+                    return
+                }
             //NOTE: If the user already exists in the db it updates the user
             this.updateUser(user);
         });

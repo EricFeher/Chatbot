@@ -3,9 +3,9 @@ const bluebird = require('bluebird');
 const User = require("../model/user");
 const Command = require("../model/command");
 
-class DAO{
+class DAO {
     constructor() {
-        this.connection=
+        this.connection =
             mysql.createConnection({
                 host: 'localhost',
                 user: 'root',
@@ -13,52 +13,66 @@ class DAO{
                 Promise: bluebird
             });
     }
-    getConnection(){
+
+    getConnection() {
         return this.connection;
     }
-    async getUsers(){
-        let [rows, fields]=await (await this.getConnection()).execute(
-            'SELECT * FROM `users`',[]);
+
+    async getUsers() {
+        let [rows, fields] = await (await this.getConnection()).execute(
+            'SELECT * FROM `users`', []);
         return rows;
     }
 
-    async getCommand(channel,command){
-        let [rows, fields]=await (await this.getConnection()).execute(
+    async getUserById(id) {
+        let [rows, fields] = await (await this.getConnection()).execute(
+            'SELECT * FROM `users` WHERE `users`.`id`=?', [id]);
+        return rows;
+    }
+
+    async getCommand(channel, command) {
+        let [rows, fields] = await (await this.getConnection()).execute(
             'SELECT `result` FROM `commands`,`users` WHERE `commands`.`userid`=`users`.`id` AND `users`.`username` LIKE ? AND `commands`.`command` LIKE ?'
-            ,[channel,command]);
+            , [channel, command]);
         return rows;
     }
 
-    async createUser(user){
+    async createUser(user) {
         await (await this.getConnection()).execute(
             'INSERT INTO `users` (`id`,`username`,`email`,`picture`,`access_token`,`refresh_token`,`id_token`) ' +
             'VALUES (?,?,?,?,?,?,?)'
-            ,[user.id,user.username,user.email,user.picture,user.access_token,user.refresh_token,user.id_token]);
+            , [user.id, user.username, user.email, user.picture, user.access_token, user.refresh_token, user.id_token]);
     }
 
-    async updateUser(user){
+    async updateUser(user) {
         await (await this.getConnection()).execute(
             'UPDATE `users` SET `username`=?, `email`=?, `picture`=?, `access_token`=?, `refresh_token`=?, `id_token`=? ' +
             'WHERE `id`=?'
-            ,[user.username,user.email,user.picture,user.access_token,user.refresh_token,user.id_token,user.id]);
+            , [user.username, user.email, user.picture, user.access_token, user.refresh_token, user.id_token, user.id]);
     }
 
-    async createCommand(cmd){
+    async createCommand(cmd) {
         await (await this.getConnection()).execute(
             'INSERT INTO `commands` (`userid`,`command`,`result`) VALUES (?,?,?)'
-            ,[cmd.userid,cmd.command,cmd.result]);
+            , [cmd.userid, cmd.command, cmd.result]);
     }
 
-    async updateCommand(cmd){
+    async updateCommand(cmd) {
         await (await this.getConnection()).execute(
             'UPDATE  `commands` SET `result`=? WHERE `command`=? AND `userid`=?',
-            [cmd.result,cmd.command,cmd.userid]);
+            [cmd.result, cmd.command, cmd.userid]);
     }
 
-    async deleteCommand(cmd){
+    async deleteCommand(cmd) {
         await (await this.getConnection()).execute(
             'DELETE FROM `commands` WHERE `command`=? AND `userid`=?',
-            [cmd.command,cmd.userid]);
+            [cmd.command, cmd.userid]);
+    }
+
+    async deleteUserById(id) {
+        await (await this.getConnection()).execute(
+            'DELETE FROM `users` WHERE `id`=?',[id]);
     }
 }
-module.exports=DAO;
+
+module.exports = DAO;
