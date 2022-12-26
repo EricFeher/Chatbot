@@ -90,7 +90,7 @@ class TwitchService {
                 console.log("[TWITCHSERVICE]: " + response.toString())
             })
             .catch((err) => {
-                console.log("[TWITCHSERVICE]: " + err.toString())
+                throw Error("[TWITCHSERVICE]: " + err.toString())
             })
     }
 
@@ -171,7 +171,7 @@ class TwitchService {
             if (data[0] === undefined) {
                 return
             }
-            let user = new User(data[0].id, event.user_login, data[0].email, data[0].picture,
+            let user = new User(data[0].id, event.user_login, data[0].email,
                 data[0].access_token, data[0].refresh_token, data[0].id_token)
             new DAO().updateUser(user)
                 .then(() => {
@@ -232,6 +232,31 @@ class TwitchService {
             .catch((err) => {
                 console.log("[TWITCHSERVICE]: Subsription was not deleted with id: " + id + " - Error: "+ err)
             })
+    }
+
+    async getUserBearerToken(code){
+        let client_id=process.env.CLIENT_ID;
+        let client_secret=process.env.SECRET_ID;
+        let grant_type="authorization_code";
+        let redirect_uri=process.env.REDIRECT_URI+"/auth";
+        return await axios.post('https://id.twitch.tv/oauth2/token', null,{
+            params:{
+                client_id,
+                client_secret,
+                code,
+                grant_type,
+                redirect_uri
+            }
+        })
+    }
+
+    async getUserInfo(access_token){
+        return await axios.get("https://id.twitch.tv/oauth2/userinfo", {
+            headers:{
+                "Content-Type": "application/json",
+                "Authorization": "Bearer "+access_token
+            }
+        })
     }
 }
 

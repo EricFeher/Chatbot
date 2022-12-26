@@ -7,7 +7,6 @@ class User{
         this._access_token = access_token;
         this._refresh_token = refresh_token;
         this._id_token = id_token;
-        this._picture = picture;
     }
 
 

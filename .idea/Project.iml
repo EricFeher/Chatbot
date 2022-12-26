@@ -7,8 +7,10 @@
       <excludeFolder url="file://$MODULE_DIR$/tmp" />
       <excludeFolder url="file://$MODULE_DIR$/Backend/.idea" />
       <excludeFolder url="file://$MODULE_DIR$/Backend/node_modules" />
+      <excludeFolder url="file://$MODULE_DIR$/Frontend/chatbot/node_modules" />
     </content>
     <content url="file://$MODULE_DIR$/Backend/node_modules" />
+    <content url="file://$MODULE_DIR$/Frontend/chatbot/node_modules" />
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>

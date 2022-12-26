@@ -110,3 +110,29 @@ Backend/.idea
 # Temporary
 link.txt
 Backend/link.txt
+
+
+
+### FRONTEND
+
+# dependencies
+/Frontend/chatbot/node_modules
+/Frontend/chatbot/.pnp
+/Frontend/chatbot/.pnp.js
+
+# testing
+/Frontend/chatbot/coverage
+
+# production
+/Frontend/chatbot/build
+
+# misc
+/Frontend/chatbot/.DS_Store
+/Frontend/chatbot/.env.local
+/Frontend/chatbot/.env.development.local
+/Frontend/chatbot/.env.test.local
+/Frontend/chatbot/.env.production.local
+
+/Frontend/chatbot/npm-debug.log*
+/Frontend/chatbot/yarn-debug.log*
+/Frontend/chatbot/yarn-error.log*

@@ -1,15 +1,29 @@
+const express = require('express');
+const cors = require('cors');
+const router = express.Router()
+
 const Twitch = require("./events/twitch");
 const DAO = require("./dao/dao");
-const express = require('express');
 const UserManagementController = require("./controller/UserManagementController");
 const TwitchController = require("./controller/TwitchController");
 require('dotenv').config()
 
+//TODO: Make exceptions which sites can reach it
+/*app.use(cors({
+    origin: ['http://example.com', 'https://example.com']
+}));*/
+
+
 class Index{
     constructor() {
         global.app = express();
+        global.router = router;
         this.port = process.env.PORT;
-
+        app.use(cors({
+            credentials: true,
+            origin: ['http://localhost:8080','http://localhost:3000','https://c149-91-83-37-184.ngrok.io'],
+            optionSuccessStatus:200,
+        }));
         //(EVENTSUB) Need raw message body for signature verification
         app.use(express.raw({
             type: 'application/json'

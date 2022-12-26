@@ -2,7 +2,6 @@ CREATE TABLE users(
 	id INT UNSIGNED PRIMARY KEY,
 	username VARCHAR(25),
 	email VARCHAR(200),
-	picture VARCHAR(300),
 	access_token VARCHAR(30),
 	refresh_token VARCHAR(50),
 	id_token VARCHAR(1000)
@@ -19,3 +18,14 @@ CREATE TABLE commands(
 		ON UPDATE CASCADE
 		ON DELETE CASCADE 
 );
+
+CREATE TABLE sessions(
+    id INT UNSIGNED,
+    refresh_token VARCHAR(300),
+    PRIMARY KEY (id,refresh_token),
+    CONSTRAINT u_id
+    	FOREIGN KEY (id)
+    	REFERENCES users(id)
+    	ON UPDATE CASCADE
+    	ON DELETE CASCADE
+)

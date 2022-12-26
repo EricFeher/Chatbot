@@ -39,16 +39,16 @@ class DAO {
 
     async createUser(user) {
         await (await this.getConnection()).execute(
-            'INSERT INTO `users` (`id`,`username`,`email`,`picture`,`access_token`,`refresh_token`,`id_token`) ' +
-            'VALUES (?,?,?,?,?,?,?)'
-            , [user.id, user.username, user.email, user.picture, user.access_token, user.refresh_token, user.id_token]);
+            'INSERT INTO `users` (`id`,`username`,`email`,`access_token`,`refresh_token`,`id_token`) ' +
+            'VALUES (?,?,?,?,?,?)'
+            , [user.id, user.username, user.email, user.access_token, user.refresh_token, user.id_token]);
     }
 
     async updateUser(user) {
         await (await this.getConnection()).execute(
-            'UPDATE `users` SET `username`=?, `email`=?, `picture`=?, `access_token`=?, `refresh_token`=?, `id_token`=? ' +
+            'UPDATE `users` SET `username`=?, `email`=?, `access_token`=?, `refresh_token`=?, `id_token`=? ' +
             'WHERE `id`=?'
-            , [user.username, user.email, user.picture, user.access_token, user.refresh_token, user.id_token, user.id]);
+            , [user.username, user.email, user.access_token, user.refresh_token, user.id_token, user.id]);
     }
 
     async createCommand(cmd) {
@@ -72,6 +72,27 @@ class DAO {
     async deleteUserById(id) {
         await (await this.getConnection()).execute(
             'DELETE FROM `users` WHERE `id`=?',[id]);
+    }
+
+    async addRefreshToken(id,token){
+        await (await this.getConnection()).execute(
+            'INSERT INTO `sessions` (`id`,`refresh_token`) VALUES (?,?)'
+            , [id,token]
+        )
+    }
+
+    async getRefreshTokenByToken(token) {
+        let [rows, fields] = await (await this.getConnection()).execute(
+            'SELECT `id`,`refresh_token` FROM `sessions` WHERE `refresh_token` LIKE ?'
+            , [token]);
+        return rows;
+    }
+
+    async getRefreshTokenById(id) {
+        let [rows, fields] = await (await this.getConnection()).execute(
+            'SELECT `id`,`refresh_token` FROM `sessions` WHERE `id` LIKE ?'
+            , [id]);
+        return rows;
     }
 }
 
